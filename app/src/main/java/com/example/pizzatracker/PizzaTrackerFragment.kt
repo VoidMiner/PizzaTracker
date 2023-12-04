@@ -2,12 +2,16 @@ package com.example.pizzatracker
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.pizzatracker.databinding.FragmentPizzaTrackerBinding
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -15,6 +19,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.ItemizedIconOverlay
 import org.osmdroid.views.overlay.OverlayItem
 import org.osmdroid.views.overlay.Polyline
+import org.osmdroid.tileprovider.tilesource.*
 
 class PizzaTrackerFragment : Fragment() {
 
@@ -22,20 +27,32 @@ class PizzaTrackerFragment : Fragment() {
     private var startPoint: GeoPoint? = null
     private var endPoint: GeoPoint? = null
     private val mapZoomLevel = 12.0
+    private val markerOverlay: ItemizedIconOverlay<OverlayItem> by lazy {
+        ItemizedIconOverlay(ArrayList(), null, requireContext())
+    }
+    private var lineOverlay: Polyline = Polyline()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d("MenuFragment", "onCreateView")
+
         binding = FragmentPizzaTrackerBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root
     }
-    //1st commit
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val fragmentContainer = view.findViewById<View>(R.id.fragmentContainer)
+        Log.d("PizzaTrackerFragment", "Fragment container: $fragmentContainer")
+        Log.d("PizzaTrackerFragment", "Child Fragment Manager: ${childFragmentManager.findFragmentById(R.id.fragmentContainer)}")
+
+
+
 
         Configuration.getInstance().userAgentValue = activity?.packageName
 
@@ -44,11 +61,7 @@ class PizzaTrackerFragment : Fragment() {
         mapView.controller.setZoom(mapZoomLevel)
         mapView.controller.setCenter(GeoPoint(55.7558, 37.6176)) // Москва
 
-        val markerOverlay = ItemizedIconOverlay<OverlayItem>(ArrayList(), null, requireContext())
         mapView.overlays.add(markerOverlay)
-
-        // Пример геолок
-        markerOverlay.addItem(createMarker(GeoPoint(55.7558, 37.6176), "Москва"))
 
         mapView.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
@@ -59,18 +72,17 @@ class PizzaTrackerFragment : Fragment() {
                 } else if (endPoint == null) {
                     endPoint = point as GeoPoint
                     markerOverlay.addItem(createMarker(endPoint!!, "Конец"))
-                    connectPoints(mapView, startPoint!!, endPoint!!)
                 }
                 return@setOnTouchListener true
             }
             false
         }
 
-        // Маршрут, очистка маркеров
+        // Маршрут
         binding.btnRoute.setOnClickListener {
-            startPoint = null
-            endPoint = null
-            clearMarkersAndLines(mapView, markerOverlay)
+            if (startPoint != null && endPoint != null) {
+                connectPoints(mapView, startPoint!!, endPoint!!)
+            }
         }
 
         // Центрировать
@@ -86,7 +98,32 @@ class PizzaTrackerFragment : Fragment() {
                 mapView.controller.setCenter(startPoint!!)
             }
         }
+
+        // Сброс
+        binding.btnReset.setOnClickListener {
+            resetMarkersAndLines()
+        }
+        val btnZoomIn: ImageButton = view.findViewById(R.id.btnZoomIn)
+        val btnZoomOut: ImageButton = view.findViewById(R.id.btnZoomOut)
+
+        btnZoomIn.setOnClickListener {
+            mapView.controller.zoomIn()
+        }
+        btnZoomOut.setOnClickListener {
+            mapView.controller.zoomOut()
+        }
+        //кнопка меню
+        val btnMenu: Button = view.findViewById(R.id.btnMenu)
+        btnMenu.setOnClickListener {
+            val menuFragment = MenuFragment()
+            childFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, menuFragment)
+                .addToBackStack(null)
+                .commit()
+        }
+
     }
+
 
     private fun createMarker(geoPoint: GeoPoint, title: String): OverlayItem {
         val marker = OverlayItem(title, "", geoPoint)
@@ -96,21 +133,26 @@ class PizzaTrackerFragment : Fragment() {
     }
 
     private fun connectPoints(mapView: org.osmdroid.views.MapView, start: GeoPoint, end: GeoPoint) {
-        val line = Polyline()
-        line.addPoint(start)
-        line.addPoint(end)
-        line.color = android.graphics.Color.BLUE
-        mapView.overlays.add(line)
-    }
+        mapView.overlays.remove(lineOverlay)
 
-    private fun clearMarkersAndLines(mapView: org.osmdroid.views.MapView, markerOverlay: ItemizedIconOverlay<OverlayItem>) {
-        markerOverlay.removeAllItems()
-        mapView.overlays.clear()
+        lineOverlay = Polyline()
+        lineOverlay.addPoint(start)
+        lineOverlay.addPoint(end)
+        lineOverlay.color = android.graphics.Color.BLUE
+        mapView.overlays.add(lineOverlay)
+
         mapView.invalidate()
     }
+
+
+    private fun resetMarkersAndLines() {
+        startPoint = null
+        endPoint = null
+
+        markerOverlay.removeAllItems()
+        binding.mapView.overlays.remove(lineOverlay)
+
+        binding.mapView.invalidate()
+    }
+
 }
-
-
-
-
-

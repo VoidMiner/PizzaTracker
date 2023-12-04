@@ -1,40 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".PizzaTrackerFragment">
 
     <org.osmdroid.views.MapView
         android:id="@+id/mapView"
+        tilesource="Mapnik"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+    </org.osmdroid.views.MapView>
+
+    <ImageButton
+        android:id="@+id/btnZoomOut"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="200dp"
+        android:background="?android:selectableItemBackground"
+        android:src="@drawable/ic_minus"
+        android:text="ZoomOut"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintEnd_toEndOf="@+id/btnZoomIn"
+        app:layout_constraintStart_toStartOf="@+id/btnZoomIn" />
+
+    <ImageButton
+        android:id="@+id/btnZoomIn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="20dp"
+        android:background="?android:selectableItemBackground"
+        android:src="@drawable/ic_plus"
+        android:text="ZoomIn"
+        app:layout_constraintBottom_toTopOf="@+id/btnZoomOut"
+        app:layout_constraintEnd_toEndOf="@+id/mapView" />
+
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+    android:padding="8dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tilesource="Mapnik" />
-
-    <Button
-        android:id="@+id/btnRoute"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Маршрут"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"/>
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnCenter"
-        android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btnMenu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Меню"
+            android:textSize="14sp"
+            android:padding="8dp"
+            android:onClick="onMenuButtonClick"
+            />
+
+        <Button
+            android:id="@+id/btnCenter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Центрировать"
+            android:textSize="14sp"
+            android:padding="8dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Центр"
-        android:layout_above="@id/btnRoute"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"/>
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnFix"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Фиксация"
-        android:layout_above="@id/btnCenter"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"/>
+        <Button
+            android:id="@+id/btnFix"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Фиксировать"
+            android:textSize="14sp"
+            android:padding="8dp" />
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/btnRoute"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Маршрут"
+            android:textSize="14sp"
+            android:padding="8dp" />
+
+        <Button
+            android:id="@+id/btnReset"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Сброс"
+            android:textSize="14sp"
+            android:padding="8dp" />
+
+    </LinearLayout>
+</LinearLayout>
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
