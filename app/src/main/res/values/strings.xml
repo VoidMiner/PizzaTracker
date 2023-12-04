@@ -2,4 +2,8 @@
     <string name="app_name">PizzaTracker</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dish_image_description">Какое-то описание</string>
+    <string name="dish_details_template">
+        Отличительной чертой пиццы «Пепперони» является ее остро-жгучий вкус. В этой пицце главную роль играет колбаса «Пепперони», нарезанная небольшими кусочками. Жирные острые кусочки салями великолепно сочетаются с нежностью Моцареллы. %s</string>
+
 </resources>

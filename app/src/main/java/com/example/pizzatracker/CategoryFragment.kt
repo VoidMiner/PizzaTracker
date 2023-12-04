@@ -26,6 +26,7 @@ class CategoryFragment : Fragment() {
 
     private lateinit var category: String
     private lateinit var dishAdapter: DishAdapter
+    private var onDishClickListener: ((Dish) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,12 +47,18 @@ class CategoryFragment : Fragment() {
         categoryNameTextView.text = category
 
         val dishRecyclerView = view.findViewById<RecyclerView>(R.id.dishRecyclerView)
-        dishAdapter = DishAdapter(createDummyDishes()) { _ ->
+        dishAdapter = DishAdapter(createDummyDishes()) { dish ->
+            onDishClickListener?.invoke(dish)
         }
         dishRecyclerView.adapter = dishAdapter
         dishRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         return view
+    }
+
+    // клик на блюдо
+    fun setOnDishClickListener(listener: (Dish) -> Unit) {
+        onDishClickListener = listener
     }
 
     private fun createDummyDishes(): List<Dish> {

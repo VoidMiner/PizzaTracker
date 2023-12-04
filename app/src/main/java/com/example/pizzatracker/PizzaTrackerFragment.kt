@@ -47,13 +47,6 @@ class PizzaTrackerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val fragmentContainer = view.findViewById<View>(R.id.fragmentContainer)
-        Log.d("PizzaTrackerFragment", "Fragment container: $fragmentContainer")
-        Log.d("PizzaTrackerFragment", "Child Fragment Manager: ${childFragmentManager.findFragmentById(R.id.fragmentContainer)}")
-
-
-
-
         Configuration.getInstance().userAgentValue = activity?.packageName
 
         val mapView = binding.mapView
@@ -112,12 +105,12 @@ class PizzaTrackerFragment : Fragment() {
         btnZoomOut.setOnClickListener {
             mapView.controller.zoomOut()
         }
-        //кнопка меню
+        //меню
         val btnMenu: Button = view.findViewById(R.id.btnMenu)
         btnMenu.setOnClickListener {
             val menuFragment = MenuFragment()
-            childFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, menuFragment)
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.container, menuFragment)
                 .addToBackStack(null)
                 .commit()
         }
@@ -143,8 +136,6 @@ class PizzaTrackerFragment : Fragment() {
 
         mapView.invalidate()
     }
-
-
     private fun resetMarkersAndLines() {
         startPoint = null
         endPoint = null

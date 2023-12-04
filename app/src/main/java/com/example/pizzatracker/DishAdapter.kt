@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class DishAdapter(private var dishes: List<Dish>, param: (Any) -> Unit) : RecyclerView.Adapter<DishAdapter.DishViewHolder>() {
+class DishAdapter(private var dishes: List<Dish>, private val onDishClickListener: (Dish) -> Unit) : RecyclerView.Adapter<DishAdapter.DishViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DishViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_dish, parent, false)
@@ -22,14 +22,19 @@ class DishAdapter(private var dishes: List<Dish>, param: (Any) -> Unit) : Recycl
         return dishes.size
     }
 
-    fun updateDishes(newDishes: List<Dish>) {
-        dishes = newDishes
-        notifyDataSetChanged()
-    }
-
     inner class DishViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val dishNameTextView: TextView = itemView.findViewById(R.id.dishNameTextView)
         private val dishDetailsTextView: TextView = itemView.findViewById(R.id.dishDetailsTextView)
+
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val dish = dishes[position]
+                    onDishClickListener.invoke(dish)
+                }
+            }
+        }
 
         fun bind(dish: Dish) {
             dishNameTextView.text = dish.name
@@ -37,5 +42,3 @@ class DishAdapter(private var dishes: List<Dish>, param: (Any) -> Unit) : Recycl
         }
     }
 }
-
-

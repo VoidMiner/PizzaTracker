@@ -35,6 +35,15 @@ class MenuFragment : Fragment(), CategoryAdapter.OnItemClickListener {
         Log.d("MenuFragment", "Clicked on category: $category")
         val categoryFragment = CategoryFragment.newInstance(category)
 
+        // выбрать блюдо
+        categoryFragment.setOnDishClickListener { dish ->
+            val dishCardFragment = DishCardFragment.newInstance(dish)
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.container, dishCardFragment)
+                .addToBackStack(null)
+                .commit()
+        }
+
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.container, categoryFragment)
             .addToBackStack(null)
