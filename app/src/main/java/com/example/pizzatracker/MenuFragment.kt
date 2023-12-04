@@ -34,8 +34,9 @@ class MenuFragment : Fragment(), CategoryAdapter.OnItemClickListener {
     override fun onItemClick(category: String) {
         Log.d("MenuFragment", "Clicked on category: $category")
         val categoryFragment = CategoryFragment.newInstance(category)
-        childFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, categoryFragment)
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.container, categoryFragment)
             .addToBackStack(null)
             .commit()
     }
